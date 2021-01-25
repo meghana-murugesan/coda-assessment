@@ -1,5 +1,4 @@
 ParametersMap:
-  dev:
     TemplateS3Region: 'us-east-1'
     TemplateS3Location: 'coda-assessment-meghana'
     BucketName: 'meghana-coda-assessment'
