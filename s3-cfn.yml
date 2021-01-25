@@ -1,0 +1,114 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: AWS CloudFormation Template to provision S3 Buckets
+Parameters:
+  BucketName:
+    Description: A unique name for the S3 bucket
+    Type: String
+    AllowedPattern: '(?=^.{3,63}$)(?!^(\d+\.)+\d+$)(^(([a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*([a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$)'
+    ConstraintDescription: The bucket name must contain only lowercase letters, numbers, periods (.), and dashes (-).It cannot start or end with a hyphen (-).
+  Versioning:
+    Description: Does versioning needs to be enabled?
+    Type: String
+    AllowedValues:
+    - 'true'
+    - 'false'
+    Default: 'false'
+  UsedForWebsiteHosting:
+    Description: Is the bucket used for hosting Static content served through CloudFront
+    Type: String
+    AllowedValues:
+      - 'true'
+      - 'false'
+    Default: 'false' 
+
+Conditions: 
+  EnableVersioning: !Equals [!Ref Versioning, "true"]
+  ForWebsiteHosting: !Equals [!Ref UsedForWebsiteHosting, "true"]
+
+
+Resources:
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref BucketName
+      AccessControl: Private
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: error.html
+      BucketEncryption: 
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault: !If
+              - ForWebsiteHosting
+              -
+                SSEAlgorithm: AES256
+              - 
+                SSEAlgorithm: aws:kms
+                KMSMasterKeyID: !Sub 'arn:aws:kms:${AWS::Region}:${AWS::AccountId}:alias/aws/s3'
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        IgnorePublicAcls: true
+        BlockPublicPolicy: true
+        RestrictPublicBuckets: true
+      VersioningConfiguration:
+        'Fn::If':
+          - EnableVersioning
+          - 
+            Status: "Enabled"
+          - !Ref "AWS::NoValue"
+
+  CloudFrontOAI:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Condition: ForWebsiteHosting
+    Properties: 
+      CloudFrontOriginAccessIdentityConfig:  
+        Comment:  CloudFrontUser for assessment
+
+  WebsiteS3BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Condition: ForWebsiteHosting
+    Properties:
+      Bucket: !Ref S3Bucket
+      PolicyDocument: 
+        Statement: 
+          -
+            Sid: "DenyHttp"
+            Action: 
+              - "s3:PutObject"
+              - "s3:GetObject"
+            Effect: "Deny"
+            Resource: !Sub 'arn:aws:s3:::${BucketName}/*'
+            Principal: "*"
+            Condition:
+              Bool:
+                'aws:SecureTransport': "false"   
+          -
+            Sid: "Grant a CloudFront Origin Access Identity to support private content"
+            Action: 
+              - "s3:GetObject"
+            Effect: "Allow"
+            Resource: !Sub 'arn:aws:s3:::${BucketName}/*'
+            Principal: 
+              CanonicalUser: !GetAtt CloudFrontOAI.S3CanonicalUserId
+
+
+
+Outputs:
+  S3BucketName:
+    Description: Name of the S3 Bucket
+    Value: !Ref S3Bucket
+  S3BucketArn:
+    Description: The ARN of S3 Bucket
+    Value: !GetAtt S3Bucket.Arn
+  S3BucketURL:
+    Description: The Website URL of the S3 Bucket
+    Value: !GetAtt S3Bucket.WebsiteURL
+  CloudFrontOAI:
+    Description: Cloud Front OAI User
+    Condition: ForWebsiteHosting
+    Value: !Ref CloudFrontOAI
+  WebsiteURL:
+    Value: !GetAtt
+      - S3Bucket
+      - WebsiteURL
+    Description: URL for website hosted on S3
+  
