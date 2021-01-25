@@ -6,7 +6,7 @@ pipeline {
   parameters {
     string(
       name: 'PARAMETER_FILE_PATH',
-      defaultValue: 'parameters.json',
+      defaultValue: 'parameters.yaml',
       description: 'aws cloudformation create-stack command extra arguments'
     )
     string(
@@ -21,7 +21,7 @@ pipeline {
     )
     string(
       name: 'TEMPLATE_FILE_PATH',
-      defaultValue: 'blueprint.json',
+      defaultValue: 'blueprint.yaml',
       description: 'CloudFormation template file path'
     )
   }
