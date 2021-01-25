@@ -1,0 +1,35 @@
+[
+  {
+    "ParameterKey": "TemplateS3Region",
+    "ParameterValue": "us-east-1"
+  }, 
+  {
+    "ParameterKey": "TemplateS3Location",
+    "ParameterValue": "coda-assessment-meghana"
+  },
+  {
+    "ParameterKey": "BucketName",
+    "ParameterValue": "meghana-coda-assessment"
+  },
+  {
+    "ParameterKey": "OriginDomainName",
+    "ParameterValue": "meghana-coda-assessment.s3.amazonaws.com"
+  },
+  {
+    "ParameterKey": "OriginId",
+    "ParameterValue": "meg-coda"
+  },
+  {
+    "ParameterKey": "Aliases",
+    "ParameterValue": "meghana-coda.assessments.coda.run"
+  },
+  {
+    "ParameterKey": "AcmCertificateArn",
+    "ParameterValue": "arn:aws:acm:us-east-1:528922625383:certificate/988f4218-d51b-4447-8b23-bd76e80b3aeb"
+  },
+  {
+    "ParameterKey": "OriginType",
+    "ParameterValue": "s3"
+  }
+]
+    
