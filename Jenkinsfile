@@ -6,7 +6,7 @@ pipeline {
   parameters {
     string(
       name: 'PARAMETER_FILE_PATH',
-      defaultValue: 'parameters.yaml',
+      defaultValue: 'parameters.json',
       description: 'aws cloudformation create-stack command extra arguments'
     )
     string(
