@@ -59,14 +59,14 @@ pipeline {
                 --stack-name "${params.STACK_NAME}" \
                 --region us-east-1 \
                 --template-body file://./"${params.TEMPLATE_FILE_PATH}" \
-                --parameters file://./"${params.PARAMETER_FILE_PATH}" --capabilities CAPABILITY_NAMED_IAM
+                --parameters file://./"${params.PARAMETER_FILE_PATH}" --capabilities CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND
                 else
                 echo  "Stack exists, attempting update .."
                 aws cloudformation update-stack \
                 --region us-east-1 \
                 --stack-name "${params.STACK_NAME}" \
                 --template-body file://./"${params.TEMPLATE_FILE_PATH}" \
-                --parameters file://./"${params.PARAMETER_FILE_PATH}" --capabilities CAPABILITY_NAMED_IAM
+                --parameters file://./"${params.PARAMETER_FILE_PATH}" --capabilities CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND
                 
               fi"""         
               }
