@@ -15,8 +15,6 @@ Parameters:
     Type: String
   OriginId:
     Type: String
-  OriginPath:
-    Type: String
   Aliases:
     Type: String
   AcmCertificateArn:
@@ -51,7 +49,6 @@ Resources:
       Parameters:
         OriginDomainName:                        !Ref OriginDomainName
         OriginId:                                !Ref OriginId
-        OriginPath:                              !Ref OriginPath
         Aliases:                                 !Ref Aliases
         AcmCertificateArn:                       !Ref AcmCertificateArn
         OriginType:                              !Ref OriginType   
