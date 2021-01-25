@@ -1,0 +1,11 @@
+ParametersMap:
+  dev:
+    TemplateS3Region: 'us-east-1'
+    TemplateS3Location: 'coda-assessment-meghana'
+    BucketName: 'meghana-coda-assessment'
+    OriginDomainName: 'meghana-coda-assessment.s3.amazonaws.com'
+    OriginId: 'meg-coda'
+    Aliases: 'meghana-coda.assessments.coda.run'
+    AcmCertificateArn: 'arn:aws:acm:us-east-1:528922625383:certificate/988f4218-d51b-4447-8b23-bd76e80b3aeb'
+    OriginType: 's3'
+    

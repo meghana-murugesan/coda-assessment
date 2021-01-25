@@ -1,0 +1,58 @@
+Description: >
+  This template will build the resources for NE Fleet Management which includes a highly scalable
+  ECS Cluster, Redis, Kinesis, S3 Bucket, SFTP service, Postgres RDS, Dynamodb.
+
+Parameters:
+  TemplateS3Region:
+    Type: String
+  TemplateS3Location:
+    Type: String
+  #OperationsEmail:
+  #  Type: String
+  BucketName:
+    Type: String
+  OriginDomainName:
+    Type: String
+  OriginId:
+    Type: String
+  OriginPath:
+    Type: String
+  Aliases:
+    Type: String
+  AcmCertificateArn:
+    Type: String
+  #ClusterSize:
+  #  Type: Number
+  #ECSInstanceType:
+  #  Type: String
+  OriginType:
+    Type: String
+
+Mappings:
+  'Fn::Transform':
+    Name: 'AWS::Include'
+    Parameters:
+      Location: !Sub s3://${TemplateS3Location}/parameters.yaml
+  
+
+Resources:
+  
+  S3bucket:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub https://${TemplateS3Region}.amazonaws.com/${TemplateS3Location}/s3.yml
+      Parameters:
+        BucketName:                        !Ref BucketName
+
+  CFN:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub https://${TemplateS3Region}.amazonaws.com/${TemplateS3Location}/infrastructure/cfn.yml
+      Parameters:
+        OriginDomainName:                        !Ref OriginDomainName
+        OriginId:                                !Ref OriginId
+        OriginPath:                              !Ref OriginPath
+        Aliases:                                 !Ref Aliases
+        AcmCertificateArn:                       !Ref AcmCertificateArn
+        OriginType:                              !Ref OriginType   
+  
