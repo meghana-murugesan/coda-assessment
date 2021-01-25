@@ -30,7 +30,7 @@ Mappings:
   'Fn::Transform':
     Name: 'AWS::Include'
     Parameters:
-      Location: !Sub s3://${TemplateS3Location}/parameters.yaml
+      Location: !Sub s3://${TemplateS3Location}/parameters.json
   
 
 Resources:
