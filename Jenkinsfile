@@ -43,7 +43,7 @@ pipeline {
     stage('Validate Cloudformation Template') {
         steps {
             dir ("${env.WORKSPACE}") {
-              sh """ aws cloudformation validate-template --template-body file://"${params.TEMPLATE_FILE_PATH}"
+              sh """ aws cloudformation validate-template --template-body file://"${params.TEMPLATE_FILE_PATH}" --region us-east-1
                 """
             
             }
@@ -57,11 +57,13 @@ pipeline {
               echo  "Creating stack" 
               aws cloudformation create-stack \
                 --stack-name "${params.STACK_NAME}" \
+                --region us-east-1 \
                 --template-body file://./"${params.TEMPLATE_FILE_PATH}" \
                 --parameters file://./"${params.PARAMETER_FILE_PATH}" --capabilities CAPABILITY_NAMED_IAM
                 else
                 echo  "Stack exists, attempting update .."
                 aws cloudformation update-stack \
+                --region us-east-1 \
                 --stack-name "${params.STACK_NAME}" \
                 --template-body file://./"${params.TEMPLATE_FILE_PATH}" \
                 --parameters file://./"${params.PARAMETER_FILE_PATH}" --capabilities CAPABILITY_NAMED_IAM
